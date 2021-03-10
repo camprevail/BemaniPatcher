@@ -202,14 +202,6 @@ class PatchContainer {
         return dlls;
     }
 
-    getSupportedVersions() {
-        var descriptions = [];
-        for (var i = 0; i < this.patchers.length; i++) {
-            descriptions.push(this.patchers[i].description);
-        }
-        return descriptions;
-    }
-
     createUI() {
         var self = this;
         var container = $("<div>", {"class": "patchContainer"});
@@ -217,18 +209,36 @@ class PatchContainer {
         container.html("<h3>" + header + "</h3>");
 
         var supportedDlls = $("<ul>");
-        var versions = this.getSupportedVersions();
         this.forceLoadTexts = [];
         this.forceLoadButtons = [];
-        for (var i = 0; i < versions.length; i++) {
+        for (var i = 0; i < this.patchers.length; i++) {
+            var checkboxId = createID();
+
             var listItem = $("<li>");
-            $('<span>').text(versions[i]).appendTo(listItem);
+            $('<label>')
+                .attr("for", checkboxId)
+                .text(this.patchers[i].description)
+                .addClass('patchPreviewLabel')
+                .appendTo(listItem);
             var matchPercent = $('<span>').addClass('matchPercent');
             this.forceLoadTexts.push(matchPercent);
             matchPercent.appendTo(listItem);
             var forceButton = $('<button>').text('Force load?').hide();
             this.forceLoadButtons.push(forceButton);
             forceButton.appendTo(listItem);
+
+            $("<input>", {
+                "class": "patchPreviewToggle",
+                "id": checkboxId,
+                "type": "checkbox",
+            }).appendTo(listItem);
+            var patchPreviews = $("<ul>").addClass('patchPreview');
+            for (var j = 0; j < this.patchers[i].mods.length; j++) {
+                var patchName = this.patchers[i].mods[j].name;
+                $('<li>').text(patchName).appendTo(patchPreviews);
+            }
+            patchPreviews.appendTo(listItem);
+
             listItem.appendTo(supportedDlls);
         }
 
@@ -242,6 +252,7 @@ class PatchContainer {
             })
             .on("dragover dragenter dragleave dragend drop", function (e) {
                 e.preventDefault();
+                e.stopPropagation();
             });
 
         container.on("drop", function (e) {
@@ -250,13 +261,14 @@ class PatchContainer {
                 self.loadFile(files[0]);
         });
 
+        var filepickerId = createID();
         this.fileInput = $("<input>",
             {
                 "class": "fileInput",
-                "id": "any-file",
+                "id": filepickerId,
                 "type": "file",
             });
-        var label = $("<label>", {"class": "fileLabel", "for": "any-file"});
+        var label = $("<label>", {"class": "fileLabel", "for": filepickerId});
         label.html("<strong>Choose a file</strong> or drag and drop.");
 
         this.fileInput.on("change", function (e) {
@@ -270,9 +282,8 @@ class PatchContainer {
         container.append(this.fileInput);
         container.append(label);
 
-        if (versions.length > 0) {
-            $("<h4>Supported Versions</h4>").appendTo(container);
-        }
+        $("<h4>Supported Versions:</h4>").appendTo(container);
+        $("<h5>Click name to preview patches</h5>").appendTo(container);
         container.append(supportedDlls);
         container.append(this.successDiv);
         container.append(this.errorDiv);
@@ -395,11 +406,12 @@ class Patcher {
                     self.loadFile(files[0]);
             });
 
+            var filepickerId = createID();
             this.fileInput = $("<input>",
                 {"class": "fileInput",
-                 "id" : this.filename + '-file',
+                 "id" : filepickerId,
                  "type" : 'file'});
-            var label = $("<label>", {"class": "fileLabel", "for": this.filename + '-file'});
+            var label = $("<label>", {"class": "fileLabel", "for": filepickerId});
             label.html('<strong>Choose a file</strong> or drag and drop.');
 
             this.fileInput.on('change', function(e) {
