@@ -8,14 +8,27 @@
   font-weight: normal;
   font-style: normal;
 }
+.tagline {
+    font-family: monospace;
+}
 
-.icons {
-    display: flex;
-    flex-wrap: wrap;
+.icons, .subsection {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 180px);
+    grid-auto-flow: dense;
     align-items: stretch;
     margin: 0 auto;
     text-align: center;
     justify-content: center;
+}
+
+.subsection {
+    grid-column: 1 / -1;
+    background-color: #a2a2a2;
+    margin: unset;
+    /* I don't understand anything */
+    margin-right: -15px;
+    padding-right: 15px;
 }
 
 .gameicon,
@@ -37,6 +50,20 @@
     justify-content: center;
 }
 
+label.gameicon {
+    cursor: pointer;
+    background: #fffcf0;
+}
+
+input.sectionToggle,
+input.sectionToggle + div {
+    display: none;
+}
+
+input:checked.sectionToggle + div {
+    display: grid;
+}
+
 .gameicon:hover,
 .dragover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
@@ -52,15 +79,11 @@
     margin-top: 5px;
 }
 
-.gameicon>div>div {
-    margin-top: auto;
-    margin-bottom: auto;
-}
-
 .gameicon>div {
     height: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .fileInput {
@@ -138,6 +161,15 @@
     display: none;
 }
 
+.danger {
+    background: #ff6000 !important;
+}
+
+.danger:before {
+    content: '!!';
+    background: #ff6000;
+}
+
 body {
     margin: 40px auto;
     max-width: 1300px;
@@ -207,6 +239,12 @@ button:hover:enabled, .fileLabel > strong:hover {
     font-size: 15px;
     font-style: italic;
     color: red;
+}
+
+.matchSuccess {
+    font-size: 15px;
+    font-style: italic;
+    color: green;
 }
 
 li > button {
@@ -293,7 +331,6 @@ input[type=radio] {
     cursor: pointer;
     display: inline-block;
 }
-
 .patchPreviewLabel {
     cursor: pointer;
 }
@@ -305,4 +342,62 @@ input[type=radio] {
 }
 input[type=checkbox]:checked + .patchPreview {
     display: block;
+}
+input[type=checkbox] ~ ul > li.patch-off {
+    display: none;
+}
+input[type=checkbox] ~ ul > li.patch-on {
+    display: list-item;
+}
+input[type=checkbox]:checked ~ ul > li.patch-on {
+    display: none;
+}
+input[type=checkbox]:checked ~ ul > li.patch-off {
+    display: list-item;
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #1d1e1f;
+	color: #fff;
+  }
+  .gameicon, .patchContainer {
+		background-color: #2e2e2e;
+  }
+  label.gameicon {
+	  background: #303025;
+  }
+  .subsection {
+    background-color: #464646;
+  }
+  .success {
+    color: green;
+  }
+}
+@media (prefers-color-scheme: light) {
+  body {
+    background: #e2e1e0;
+	color: #000;
+  }
+  .gameicon, .patchContainer {
+		background-color: white;
+  }
+  label.gameicon {
+	  background: #fffcf0;
+  }
+  .subsection {
+    background-color: #a2a2a2;
+  }
+}
+.image-wrapper {
+    position: relative;
+}
+.image-hover {
+    position: absolute;
+    top: 0;
+    left: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+.image-hover:hover {
+    opacity: 1;
 }

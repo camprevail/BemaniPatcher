@@ -4,9 +4,6 @@
     <meta charset="utf-8">
     <title>MÚSECA 1+1/2 DLL Modder</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- don't hate -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script type="text/javascript" src="js/FileSaver.min.js"></script>
     <script type="text/javascript" src="js/dllpatcher.js"></script>
     <script type="text/javascript">
         window.addEventListener("load", function () {
@@ -112,6 +109,31 @@
                                 off: [0x8D, 0x81, 0xFB],
                                 on: [0xB0, 0x01, 0xC3]
                             },
+                        ]
+                    },
+                    {
+                        name: "Make game respect server-sent option to disable local matching", // Created by Cammy
+                        patches: [
+                            {
+                                offset: 0x248525,
+                                off: [0x75, 0x0C],
+                                on: [0x90, 0x90]
+                            },
+                        ]
+                    },
+                    {
+                        name: "Timer freeze", // Created by Cammy
+                        patches: [
+                            {
+                                offset: 0x28E610,
+                                off: [0x0F, 0x85, 0x26, 0x01, 0x00],
+                                on: [0xE9, 0x27, 0x01, 0x00, 0x00]
+                            },
+                            {
+                                offset: 0x287C3E,
+                                off: [0x75],
+                                on: [0xEB]
+                            }
                         ]
                     },
                 ]),
